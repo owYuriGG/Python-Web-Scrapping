@@ -5,8 +5,22 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+def clear():
+    os.system("cls")
+
+def selection_sort(games):
+  for i in range(len(games)):
+    menor_index = i
+    for j in range(i+1, len(games)):
+      if float(games[j]['preco']) < float(games[menor_index]['preco']):
+        menor_index = j
+    games[i], games[menor_index] = games[menor_index], games[i]
+
+  return games
+
 def get_page():
-    servico = Service('C:/msedgedriver.exe')
+    caminho_driver = os.path.join('msedgedriver.exe')
+    servico = Service(caminho_driver)
     driver = webdriver.Edge(service=servico)
     url = "https://store.steampowered.com/search/?filter=topsellers"
     driver.get(url)
@@ -17,11 +31,13 @@ def get_page():
         )
         html = driver.page_source
 
-        caminho_arquivo = os.path.join('..', 'pagina_scrap.txt')
+        caminho_arquivo = os.path.join('pagina_scrap.txt')
         with open(caminho_arquivo, 'w', encoding='utf-8') as f:
             f.write(html)
-        
-        print("O conteúdo do body da página foi salvo no arquivo 'pagina_scrap.txt'.")
+        print("Página extraída com sucesso! ")
+        print("Salvando...")
+    except BaseException as error:
+        print(f"[ERRO] Um erro inesperado aconteceu: {error}")
     finally:
         driver.quit()
 
@@ -66,32 +82,76 @@ def get_game_price(linhas, game, i):
                     value = value + '.'
                 else: 
                     value = value + subsublinha[1][i]
-            game['preco'] = value
+            if value != 'atuito':
+                game['preco'] = value
+            else:
+                game['preco'] = 0.0
     return game
 
-def separate_games():
-    caminho_arquivo = os.path.join('..', 'pagina_scrap.txt')
-    arquivo = open(caminho_arquivo, 'r', encoding='utf-8')
-    linhas = arquivo.readlines()
+def extrair_jogos():
+    try:
+        caminho_arquivo = os.path.join('pagina_scrap.txt')
+        arquivo = open(caminho_arquivo, 'r', encoding='utf-8')
+        linhas = arquivo.readlines()
 
-    games = []
+        games = []
 
-    for i in range(len(linhas)):
-        initial_game = {'nome': '', 'preco' : 0.0, 'lancamento': ''}
+        for i in range(len(linhas)):
+            initial_game = {'nome': '', 'preco' : 0.0, 'lancamento': ''}
 
-        if "responsive_search_name_combined" in linhas[i]:
-            initial_game = get_game_name(linhas, initial_game, i)
-            initial_game = get_game_data(linhas, initial_game, i)
-            initial_game = get_game_price(linhas, initial_game, i)
-            
-            games.append(initial_game)
-    return games
+            if "responsive_search_name_combined" in linhas[i]:
+                initial_game = get_game_name(linhas, initial_game, i)
+                initial_game = get_game_data(linhas, initial_game, i)
+                initial_game = get_game_price(linhas, initial_game, i)
+                
+                games.append(initial_game)
+        print("Jogos extraídos com sucesso!")
+        return games
+    except BaseException as error:
+        print(f"[ERRO] Um erro inesperado aconteceu: {error}")
+        print("Você realizou o Scrapping antes?")
+        return []
+
+def menu():
+    print("----- Python Web Scrapping -----")
+    print("1 - Realizar Scrapping (baixar html da página)")
+    print("2 - Extraír dados do scrap")
+    print("3 - Ordenar dados")
+    print("4 - Mostrar situação atual dos dados")
+    print("5 - Sair")
+    opc = str(input("Selecione uma opção: "))
+    return opc
 
 def main():
-    get_page()
-    games = separate_games()
+    games = []
+    opc = 0
 
-    for game in games:
-        print(f'Jogo: {game['nome']}, Preço: R${game['preco']}, Data de lançamento: {game['lancamento']} \n')
+    while opc != '5':
+        opc = menu()
+
+        if opc == '1':
+            clear()
+            get_page()
+        elif opc == '2':
+            clear()
+            games = extrair_jogos()
+        elif opc == '3':
+            clear()
+            if games:
+                games = selection_sort(games)
+                print("Dados ordenados! ")
+            else:
+                print("[ERRO] Nenhum dado extraído ainda!")
+                print("Você extraíu os dados do Scrap?")
+        elif opc == '4':
+            clear()
+            if games:
+                for game in games:
+                    print(f'Jogo: {game['nome']}, Preço: R${game['preco']}, Data de lançamento: {game['lancamento']} \n')
+            else:
+                print("[ERRO] Nenhum dado extraído ainda!")
+                print("Você extraíu os dados do Scrap?")
+        elif opc == '5':
+            print("Até breve!")
 
 main()
