@@ -23,9 +23,9 @@ def get_page():
     servico = Service(caminho_driver)
     driver = webdriver.Edge(service=servico)
     url = "https://store.steampowered.com/search/?filter=topsellers"
-    driver.get(url)
 
     try:
+        driver.get(url)
         WebDriverWait(driver, 30).until(
             EC.presence_of_element_located((By.TAG_NAME, 'body'))
         )
