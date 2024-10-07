@@ -12,3 +12,14 @@ def menu():
     print("5 - Sair")
     opc = str(input("Selecione uma opção: "))
     return opc
+
+def int_input_validado(msg):
+    while True:
+        input_ = input(msg)
+        try:
+             int(input_)
+             break
+        except:
+            print("Invalido. Por favor digite um numero")
+
+    return int(input_)

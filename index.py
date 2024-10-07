@@ -1,12 +1,13 @@
 import os
 from scrap_module import get_page
-from sort_module import selection_sort
+from sort_module import merge_sort_externo
 from extract_module import get_game_data
 from extract_module import get_game_name
 from extract_module import get_game_price
 from extract_module import extrair_jogos
 from utilities_module import clear
 from utilities_module import menu
+from utilities_module import int_input_validado
 
 def main():
     games = []
@@ -20,15 +21,13 @@ def main():
             get_page()
         elif opc == '2':
             clear()
-            games = extrair_jogos()
+            extrair_jogos()
         elif opc == '3':
             clear()
-            if games:
-                games = selection_sort(games)
-                print("Dados ordenados! ")
-            else:
-                print("[ERRO] Nenhum dado extraído ainda!")
-                print("Você extraíu os dados do Scrap?")
+            tamnho_sub = int_input_validado("Digite o quanto de memoria deseja utilizar: (EM MBs)")
+            games = merge_sort_externo(r"txts/games.txt", tamnho_sub, r"txts/games-ordenados.txt")
+            print("Dados ordenados! ")
+
         elif opc == '4':
             clear()
             if games:
