@@ -18,7 +18,7 @@ def get_page():
         )
         html = driver.page_source
 
-        caminho_arquivo = os.path.join('pagina_scrap.txt')
+        caminho_arquivo = os.path.join('txts/pagina_scrap.txt')
         with open(caminho_arquivo, 'w', encoding='utf-8') as f:
             f.write(html)
         print("Página extraída com sucesso! ")

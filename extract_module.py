@@ -1,3 +1,4 @@
+import json
 import os
 
 def get_game_name(linhas, game, i):
@@ -49,11 +50,14 @@ def get_game_price(linhas, game, i):
 
 def extrair_jogos():
     try:
-        caminho_arquivo = os.path.join('pagina_scrap.txt')
+        caminho_arquivo = os.path.join('txts/pagina_scrap.txt')
         arquivo = open(caminho_arquivo, 'r', encoding='utf-8')
         linhas = arquivo.readlines()
 
         games = []
+
+        with open(os.path.join('txts/games.txt'), 'w') as f:
+            pass
 
         for i in range(len(linhas)):
             initial_game = {'nome': '', 'preco' : 0.0, 'lancamento': ''}
@@ -64,9 +68,13 @@ def extrair_jogos():
                 initial_game = get_game_price(linhas, initial_game, i)
                 
                 games.append(initial_game)
+
+                with open(os.path.join('txts/games.txt'), 'a') as f:
+                    f.write(json.dumps(initial_game) + '\n')
+                    
         print("Jogos extraídos com sucesso!")
-        return games
+        return True
     except BaseException as error:
         print(f"[ERRO] Um erro inesperado aconteceu: {error}")
         print("Você realizou o Scrapping antes?")
-        return []
+        return False
