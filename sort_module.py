@@ -1,7 +1,6 @@
 import json
 import os
 import heapq
-import time
 
 def bubble_sort(lst, key):
     for _ in range(len(lst)):
@@ -30,7 +29,6 @@ def divide_arquivo(arquivo, tamanho_subarquivo):
             try:
                 buffer.append(json.loads(linha.strip()))
             except json.JSONDecodeError as e:
-                print(f"Erro ao decodificar linha como JSON: {linha}")
                 raise e
 
             if len(buffer) >= tamanho_subarquivo:
@@ -39,7 +37,6 @@ def divide_arquivo(arquivo, tamanho_subarquivo):
 
                 buffer_ordenado = bubble_sort(buffer, key="preco")
 
-                # Escreve cada item do buffer ordenado em uma nova linha no subarquivo
                 subarquivo_nome = f"subfile_{len(subarquivos)}.txt"
                 subarquivos.append(subarquivo_nome)
                 with open(subarquivo_nome, 'w') as subarq:
@@ -76,7 +73,6 @@ def merge_subarquivos(subarquivos, arquivo_saida):
             _, index, menor_dado = heapq.heappop(min_heap)
             arq_saida.write(json.dumps(menor_dado) + '\n')
 
-            # Ler a próxima linha do arquivo que tinha o menor elemento
             linha = arquivos_abertos[index].readline()
             if linha:
                 dado = json.loads(linha.strip())
