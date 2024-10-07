@@ -1,3 +1,4 @@
+import json
 import os
 from scrap_module import get_page
 from sort_module import merge_sort_externo
@@ -10,7 +11,8 @@ from utilities_module import menu
 from utilities_module import int_input_validado
 
 def main():
-    games = []
+    extraido = False
+    ordenado = False
     opc = 0
 
     while opc != '5':
@@ -21,25 +23,35 @@ def main():
             get_page()
         elif opc == '2':
             clear()
-            extrair_jogos()
+            extraido = extrair_jogos()
         elif opc == '3':
             clear()
-            tamnho_sub = int_input_validado("Digite o quanto de memoria deseja utilizar: (EM MBs)")
-            games = merge_sort_externo(r"txts/games.txt", tamnho_sub, r"txts/games-ordenados.txt")
-            print("Dados ordenados! ")
+            if extraido:
+                tamnho_sub = int_input_validado("Digite o quanto de memoria deseja utilizar: (EM MBs)")
+                merge_sort_externo(r"txts/games.txt", tamnho_sub, r"txts/games-ordenados.txt")
+                ordenado = True
+                print("Dados ordenados! ")
+            else:
+                print("[ERRO] Você já extraiu os dados? ")
 
         elif opc == '4':
             clear()
-            if games:
-                caminho_arquivo = os.path.join('jogos_ordenados.txt')
-                with open(caminho_arquivo, 'w', encoding='utf-8') as arquivo:
-                    for game in games:
-                        linha = f"Jogo: {game['nome']}, Preço: R${game['preco']}, Data de lançamento: {game['lancamento']}\n"
-                        print(linha)
-                        arquivo.write(linha)
+            if ordenado:
+                caminho_arquivo = os.path.join('txts/games-ordenados.txt')
+                with open(caminho_arquivo, 'r', encoding='utf-8') as arquivo:
+                    for linha in arquivo:
+                        game = json.loads(linha)
+                        formatted_line = f"Jogo: {game['nome']}, Preço: R${game['preco']}, Data de lançamento: {game['lancamento']} \n"
+                        print(formatted_line)
+            elif extraido:
+                caminho_arquivo = os.path.join('txts/games.txt')
+                with open(caminho_arquivo, 'r', encoding='utf-8') as arquivo:
+                    for linha in arquivo:
+                        game = json.loads(linha)
+                        formatted_line = f"Jogo: {game['nome']}, Preço: R${game['preco']}, Data de lançamento: {game['lancamento']} \n"
+                        print(formatted_line)
             else:
-                print("[ERRO] Nenhum dado extraído ainda!")
-                print("Você extraíu os dados do Scrap?")
+                print("[ERRO] Você extraiu ou ordenou os dados?")
         elif opc == '5':
             print("Até breve!")
 

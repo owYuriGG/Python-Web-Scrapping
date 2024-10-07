@@ -28,13 +28,11 @@ def divide_arquivo(arquivo, tamanho_subarquivo):
                 break
 
             try:
-                # Carrega a linha como um dicionário JSON e adiciona ao buffer
                 buffer.append(json.loads(linha.strip()))
             except json.JSONDecodeError as e:
                 print(f"Erro ao decodificar linha como JSON: {linha}")
                 raise e
 
-            # Quando o tamanho do buffer atinge o tamanho do subarquivo, ordena e salva
             if len(buffer) >= tamanho_subarquivo:
                 for item in buffer:
                     item["preco"] = float(item["preco"])
@@ -48,9 +46,8 @@ def divide_arquivo(arquivo, tamanho_subarquivo):
                     for item in buffer_ordenado:
                         subarq.write(json.dumps(item) + '\n')
 
-                buffer = []  # Limpa o buffer
+                buffer = []
 
-        # Ordena e salva o que restou no buffer
         if buffer:
             for item in buffer:
                 item["preco"] = float(item["preco"])
@@ -67,7 +64,6 @@ def divide_arquivo(arquivo, tamanho_subarquivo):
 def merge_subarquivos(subarquivos, arquivo_saida):
     min_heap = []
 
-    # Abrir todos os subarquivos e inicializar o heap
     arquivos_abertos = [open(sub, 'r') for sub in subarquivos]
     for i, arq in enumerate(arquivos_abertos):
         linha = arq.readline()
@@ -75,8 +71,7 @@ def merge_subarquivos(subarquivos, arquivo_saida):
             dado = json.loads(linha.strip())
             heapq.heappush(min_heap, (dado["preco"], i, dado))
 
-    # Mesclar os subarquivos
-    with open(arquivo_saida, 'w') as arq_saida:
+    with open(arquivo_saida, 'w+') as arq_saida:
         while min_heap:
             _, index, menor_dado = heapq.heappop(min_heap)
             arq_saida.write(json.dumps(menor_dado) + '\n')
@@ -87,19 +82,15 @@ def merge_subarquivos(subarquivos, arquivo_saida):
                 dado = json.loads(linha.strip())
                 heapq.heappush(min_heap, (dado["preco"], index, dado))
 
-    # Fechar todos os arquivos abertos
     for arq in arquivos_abertos:
-        time.sleep(1)
         arq.close()
 
-    # Remover os subarquivos
     for subarquivo in subarquivos:
-        time.sleep(1)
         os.remove(subarquivo)
 
 def merge_sort_externo(arquivo_entrada, tamanho_subarquivo, arquivo_saida):
 
-    #tamanho_subarquivo = tamanho_subarquivo * 1024 * 1024  # Convertendo para bytes
+    tamanho_subarquivo = tamanho_subarquivo * 1024 * 1024  # Convertendo para bytes
     script_dir = get_script_dir()
     arquivo_entrada_path = os.path.join(script_dir, arquivo_entrada)
     arquivo_saida_path = os.path.join(script_dir, arquivo_saida)

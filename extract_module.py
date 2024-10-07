@@ -56,6 +56,9 @@ def extrair_jogos():
 
         games = []
 
+        with open(os.path.join('txts/games.txt'), 'w') as f:
+            pass
+
         for i in range(len(linhas)):
             initial_game = {'nome': '', 'preco' : 0.0, 'lancamento': ''}
 
@@ -70,7 +73,8 @@ def extrair_jogos():
                     f.write(json.dumps(initial_game) + '\n')
                     
         print("Jogos extraídos com sucesso!")
+        return True
     except BaseException as error:
         print(f"[ERRO] Um erro inesperado aconteceu: {error}")
         print("Você realizou o Scrapping antes?")
-        return []
+        return False

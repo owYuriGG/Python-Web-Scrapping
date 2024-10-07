@@ -8,7 +8,7 @@ def menu():
     print("1 - Realizar Scrapping (baixar html da página)")
     print("2 - Extraír dados do scrap")
     print("3 - Ordenar dados")
-    print("4 - Mostrar situação atual dos dados")
+    print("4 - Mostrar os dados ordenados")
     print("5 - Sair")
     opc = str(input("Selecione uma opção: "))
     return opc
