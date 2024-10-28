@@ -95,5 +95,5 @@ def merge_sort_externo(arquivo_entrada, tamanho_subarquivo, arquivo_saida):
     arquivo_entrada_path = os.path.join(script_dir, arquivo_entrada)
     arquivo_saida_path = os.path.join(script_dir, arquivo_saida)
 
-    subarquivos = divide_arquivo(arquivo_entrada_path, 12)
+    subarquivos = divide_arquivo(arquivo_entrada_path, tamanho_subarquivo)
     merge_subarquivos(subarquivos, arquivo_saida_path)

@@ -2,9 +2,6 @@ import json
 import os
 from scrap_module import get_page
 from sort_module import merge_sort_externo
-from extract_module import get_game_data
-from extract_module import get_game_name
-from extract_module import get_game_price
 from extract_module import extrair_jogos
 from utilities_module import clear
 from utilities_module import menu
